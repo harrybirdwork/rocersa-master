@@ -1,0 +1,215 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model CategoryT {
+  CategoryID   Int       @id(map: "PK_CategoryT1") @default(autoincrement())
+  CategoryName String?   @db.NVarChar(255)
+  Group        String?   @db.NVarChar(255)
+  PickFeeNZ    Float?    @db.Money
+  PickFeeAU    Float?    @db.Money
+  PickFeeUK    Float?    @db.Money
+  PickFeeUS    Float?    @db.Money
+  LandCostNZ   Float?    @db.Money
+  LandCostAU   Float?    @db.Money
+  LandCostUK   Float?    @db.Money
+  LandCostUS   Float?    @db.Money
+  MarkupNZ     Float?
+  MarkupAU     Float?
+  MarkupUK     Float?
+  MarkupUS     Float?
+  PanelsT      PanelsT[]
+}
+
+model CustomersT {
+  CustomerID      Int     @id(map: "PK_Customers")
+  FirstName       String? @db.NVarChar(50)
+  LastName        String? @db.NVarChar(50)
+  Email           String? @db.NVarChar(Max)
+  AddressNumber   Int?
+  AddressStreet   String? @db.NVarChar(Max)
+  AddressPostcode String? @db.NVarChar(50)
+  AddressSuburb   String? @db.NVarChar(50)
+  AddressCountry  String? @db.NVarChar(50)
+  Phone           Int?
+}
+
+model InvoiceComponentsT {
+  ID        Int  @id(map: "PK_InvoiceComponentsT")
+  InvoiceID Int?
+  ProductID Int?
+  Quantity  Int?
+}
+
+model InvoicesT {
+  InvoiceID  Int      @id(map: "PK_InvoicesT")
+  CustomerID Int?
+  StaffID    Int?
+  Weight     Decimal? @db.Decimal(18, 0)
+  Price      Decimal? @db.Decimal(18, 0)
+  Paid       Boolean?
+  Dispatched Boolean?
+}
+
+model KitsetComponentsT {
+  ID        Int    @id(map: "PK_KitsetComponentsT") @default(autoincrement())
+  KitsetID  Int?
+  ProductID Int?
+  Quantity  Int?
+  WeightSum Float?
+}
+
+model KitsetProductT {
+  ID              Int      @id(map: "PK_KitsetProductT") @default(autoincrement())
+  ProductCode     String?  @db.NVarChar(255)
+  NameMetric      String?  @db.NVarChar(255)
+  NameImperial    String?  @db.NVarChar(255)
+  CategoryID      Int?
+  Weight          Float?
+  NZWholesaleCost Float?   @db.Money
+  AUWholesaleCost Float?   @db.Money
+  UKWholesaleCost Float?   @db.Money
+  USWholesaleCost Float?   @db.Money
+  NZRetailCost    Float?   @db.Money
+  AURetailCost    Float?   @db.Money
+  UKRetailCost    Float?   @db.Money
+  USRetailCost    Float?   @db.Money
+  NZPickFee       Float?   @db.Money
+  AUPickFee       Float?   @db.Money
+  UKPickFee       Float?   @db.Money
+  USPickFee       Float?   @db.Money
+  NZRetail_Markup Float?   @map("NZRetail+Markup") @db.Money
+  AURetail_Markup Float?   @map("AURetail+Markup") @db.Money
+  UKRetail_Markup Float?   @map("UKRetail+Markup") @db.Money
+  USRetail_Markup Float?   @map("USRetail+Markup") @db.Money
+  NZProduct       Boolean?
+  AUProduct       Boolean?
+  UKProduct       Boolean?
+  USProduct       Boolean?
+  NZStockLevel    Int?
+  AUStockLevel    Int?
+  UKStockLevel    Int?
+  USStockLevel    Int?
+}
+
+model PanelsT {
+  ID                   Int                  @id(map: "PK_ProductsT1") @default(autoincrement())
+  ProductCode          String?              @db.NVarChar(Max)
+  NameMetric           String?              @db.NVarChar(Max)
+  NameImperial         String?              @db.NVarChar(Max)
+  CategoryID           Int?
+  SizeID               Int?
+  Thickness_DiameterID Int?                 @map("Thickness/DiameterID")
+  Weight               Float?
+  NZWholesaleCost      Float?               @db.Money
+  AUWholesaleCost      Float?               @db.Money
+  UKWholesaleCost      Float?               @db.Money
+  USWholesaleCost      Float?               @db.Money
+  NZRetailCost         Float?               @db.Money
+  AURetailCost         Float?               @db.Money
+  UKRetailCost         Float?               @db.Money
+  USRetailCost         Float?               @db.Money
+  NZProduct            Boolean?
+  AUProduct            Boolean?
+  UKProduct            Boolean?
+  USProduct            Boolean?
+  NZStockLevel         Int?
+  AUStockLevel         Int?
+  UKStockLevel         Int?
+  USStockLevel         Int?
+  CategoryT            CategoryT?           @relation(fields: [CategoryID], references: [CategoryID], onDelete: NoAction, onUpdate: NoAction, map: "FK_ProductsT_CategoryT")
+  SizesT               SizesT?              @relation(fields: [SizeID], references: [SizeID], onDelete: NoAction, onUpdate: NoAction, map: "FK_ProductsT_SizesT")
+  Thickness_DiameterT  Thickness_DiameterT? @relation(fields: [Thickness_DiameterID], references: [DiameterID], onDelete: NoAction, onUpdate: NoAction, map: "FK_ProductsT_Thickness/DiameterT")
+}
+
+model ProductsT {
+  ID                  Int     @id(map: "PK_ProductsT2") @default(autoincrement())
+  ProductCode         String? @db.NVarChar(255)
+  NameMetric          String? @db.NVarChar(255)
+  NameImperial        String? @db.NVarChar(255)
+  CategoryID          Int?
+  Weight              Float?
+  NZWholesaleCost     Float?  @db.Money
+  AUWholesaleCost     Float?  @db.Money
+  UKWholesaleCost     Float?  @db.Money
+  USWholesaleCost     Float?  @db.Money
+  NZRetailCost        Float?  @db.Money
+  AURetailCost        Float?  @db.Money
+  UKRetailCost        Float?  @db.Money
+  USRetailCost        Float?  @db.Money
+  NZProduct           Boolean @default(false, map: "DEFAULT_ProductsT_NZProduct")
+  AUProduct           Boolean @default(false, map: "DEFAULT_ProductsT_AUProduct")
+  UKProduct           Boolean @default(false, map: "DEFAULT_ProductsT_UKProduct")
+  USProduct           Boolean @default(false, map: "DEFAULT_ProductsT_USProduct")
+  NZStockLevel        Int?
+  AUStockLevel        Int?
+  UKStockLevel        Int?
+  USStockLevel        Int?
+}
+
+model QuoteComponentsT {
+  ID        Int  @id(map: "PK_QuoteComponentsT") @default(autoincrement())
+  QuoteID   Int?
+  ProductID Int?
+  Quantity  Int?
+}
+
+model QuotesT {
+  QuoteID       Int    @id(map: "PK_Quotes") @default(autoincrement())
+  StaffID       Int?
+  Weight        Float?
+  Price         Float? @db.Money
+  SubdivisionID Int?
+}
+
+model SectionT {
+  SectionID Int     @id(map: "PK_SectionT") @default(autoincrement())
+  Section   String? @db.NVarChar(Max)
+  Country   String? @db.NVarChar(Max)
+}
+
+model SizesT {
+  SizeID        Int       @id(map: "PK_SizesT1") @default(autoincrement())
+  Size          String?   @db.NVarChar(255)
+  Height        Int?
+  Width         Int?
+  Area          Int?
+  NumHorizontal Int?
+  NumVertical   Int?
+  PanelsT       PanelsT[]
+}
+
+model StaffT {
+  ID   Int     @id(map: "PK_StaffT") @default(autoincrement())
+  Name String? @db.NVarChar(Max)
+}
+
+model SubdivisionT {
+  ID      Int     @id(map: "PK_SubdivisionT") @default(autoincrement())
+  Name    String? @db.NVarChar(Max)
+  Country String? @db.NVarChar(Max)
+  Product String? @db.NVarChar(Max)
+}
+
+model sysdiagrams {
+  name         String @db.NVarChar(128)
+  principal_id Int
+  diagram_id   Int    @id(map: "PK__sysdiagr__C2B05B61326BDCF1") @default(autoincrement())
+  version      Int?
+  definition   Bytes?
+
+  @@unique([principal_id, name], map: "UK_principal_name")
+}
+
+model Thickness_DiameterT {
+  DiameterID         Int       @id(map: "Thickness/DiameterT$PrimaryKey") @default(autoincrement())
+  Diameter_Thickness Float?    @default(0, map: "DF__Thickness__Diame__6C0EED1A") @map("Diameter/Thickness")
+  PanelsT            PanelsT[]
+
+  @@map("Thickness/DiameterT")
+}
