@@ -1,3 +1,3 @@
 <template>
-  <div>Test Git Push</div>
+  <div>Test Git Push2</div>
 </template>
