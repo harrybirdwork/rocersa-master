@@ -3,6 +3,10 @@
     {
       "route": "/index.html",
       "redirect": "/"
+    },
+    {
+      "route": "/",
+      "rewrite": "/api/server"
     }
   ],
   "platform": {
